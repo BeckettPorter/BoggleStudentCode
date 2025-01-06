@@ -1,9 +1,9 @@
 Name: YOUR NAME HERE
 
-| Date    |  Time  |                                     Update |
-|:--------|:------:|-------------------------------------------:|
-| April 5 | 9-10pm | I tried to write abstract, efficient code. |
-|         |        |                                            |
+| Date        |     Time      |                                                                                                                                                                                                                                                                                                                                                                                                                                  Update |
+|:------------|:-------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| April 5     |    9-10pm     |                                                                                                                                                                                                                                                                                                                                                                                              I tried to write abstract, efficient code. |
+| January 6th | 1:00 - 1:45pm | I began working on a first version, I realized my strategy to approaching it that I used on the final is not going to work so I am completely rethinking it. I think I will use DFS and a stack instead of a queue and I also chose to make a BoardPoint java class to store things such as if it is visited. I could do this with just an array of booleans I just realized, so maybe that was overkill but it should work either way. |
 
 
 To add a new row to the table, click into a cell and then hit shift-enter.
