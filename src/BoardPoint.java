@@ -12,6 +12,10 @@ public class BoardPoint
         this.character = character;
     }
 
+    public void setVisited(boolean visited)
+    {
+        this.visited = visited;
+    }
 
     public boolean isVisited()
     {

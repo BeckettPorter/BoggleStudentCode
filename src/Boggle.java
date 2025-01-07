@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Queue;
+import java.util.Stack;
 
 public class Boggle {
 
@@ -12,6 +13,7 @@ public class Boggle {
         //  and in the dictionary.
 
         BoardPoint[][] newBoard = new BoardPoint[board.length][board[0].length];
+        Stack<BoardPoint> stack = new Stack<>();
 
         // Set up the 2d Array of BoardPoints.
         for (int i = 0; i < board.length; i++)
@@ -22,14 +24,26 @@ public class Boggle {
             }
         }
 
+
+
         // For each BoardPoint on the board.
         for (int i = 0; i < newBoard.length; i++)
         {
             for (int j = 0; j < newBoard[0].length; j++)
             {
-                BoardPoint currentPoint = newBoard[i][j];
+                stack.add(newBoard[i][j]);
 
-                ArrayList<String> s = new ArrayList<>();
+                while(!stack.isEmpty())
+                {
+                    for (BoardPoint point : getSurroundingPoints(stack.peek(), newBoard))
+                    {
+                        stack.pop().setVisited(true);
+                        if (!point.isVisited())
+                        {
+                            stack.add(point);
+                        }
+                    }
+                }
             }
         }
 
@@ -42,5 +56,31 @@ public class Boggle {
         goodWords.toArray(sol);
         Arrays.sort(sol);
         return sol;
+    }
+
+    private static ArrayList<BoardPoint> getSurroundingPoints(BoardPoint startingPoint, BoardPoint[][] board)
+    {
+        int xCord = startingPoint.getxPos();
+        int yCord = startingPoint.getyPos();
+
+        ArrayList<BoardPoint> surrounding = new ArrayList<>();
+
+        if (xCord - 1 > 0)
+        {
+            surrounding.add(board[xCord - 1][yCord]);
+        }
+        if (xCord + 1 < board.length)
+        {
+            surrounding.add(board[xCord + 1][yCord]);
+        }
+        if (yCord - 1 > 0)
+        {
+            surrounding.add(board[xCord][yCord - 1]);
+        }
+        if (yCord + 1 < board.length)
+        {
+            surrounding.add(board[xCord][yCord + 1]);
+        }
+        return surrounding;
     }
 }
