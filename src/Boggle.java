@@ -3,16 +3,15 @@ import java.util.Arrays;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Boggle {
-
+public class Boggle
+{
     public static String[] findWords(char[][] board, String[] dictionary)
     {
         ArrayList<String> goodWords = new ArrayList<String>();
 
-        // TODO: Complete the function findWords(). Add all words that are found both on the board
-        //  and in the dictionary.
-
+        // New version of the board that replaces the character board with a board made up of BoardPoint objects.
         BoardPoint[][] newBoard = new BoardPoint[board.length][board[0].length];
+        // Stack which will be used for the Depth First Search.
         Stack<BoardPoint> stack = new Stack<>();
 
         // Set up the 2d Array of BoardPoints.
@@ -99,7 +98,7 @@ public class Boggle {
 
         ArrayList<BoardPoint> surrounding = new ArrayList<>();
 
-        if (xCord - 1 > 0)
+        if (xCord - 1 >= 0)
         {
             surrounding.add(board[xCord - 1][yCord]);
         }
@@ -107,7 +106,7 @@ public class Boggle {
         {
             surrounding.add(board[xCord + 1][yCord]);
         }
-        if (yCord - 1 > 0)
+        if (yCord - 1 >= 0)
         {
             surrounding.add(board[xCord][yCord - 1]);
         }
