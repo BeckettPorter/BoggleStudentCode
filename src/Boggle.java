@@ -7,11 +7,12 @@ public class Boggle
 {
     private static String[] dictionary;
     private static BoardPoint[][] board;
-    private static final ArrayList<String> goodWords = new ArrayList<String>();
+    private static ArrayList<String> goodWords;
 
     public static String[] findWords(char[][] board, String[] dictionary)
     {
         Boggle.dictionary = dictionary;
+        goodWords = new ArrayList<>();
 
         // New version of the board that replaces the character board with a board made up of BoardPoint objects.
         Boggle.board = new BoardPoint[board.length][board[0].length];
