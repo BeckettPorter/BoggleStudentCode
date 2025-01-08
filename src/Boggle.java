@@ -5,66 +5,38 @@ import java.util.Stack;
 
 public class Boggle
 {
+    private static String[] dictionary;
+    private static BoardPoint[][] board;
+    private static final ArrayList<String> goodWords = new ArrayList<String>();
+
     public static String[] findWords(char[][] board, String[] dictionary)
     {
-        ArrayList<String> goodWords = new ArrayList<String>();
+        Boggle.dictionary = dictionary;
 
         // New version of the board that replaces the character board with a board made up of BoardPoint objects.
-        BoardPoint[][] newBoard = new BoardPoint[board.length][board[0].length];
-        // Stack which will be used for the Depth First Search.
-        Stack<BoardPoint> stack = new Stack<>();
+        Boggle.board = new BoardPoint[board.length][board[0].length];
+
 
         // Set up the 2d Array of BoardPoints.
         for (int i = 0; i < board.length; i++)
         {
             for (int j = 0; j < board[0].length; j++)
             {
-                newBoard[i][j] = new BoardPoint(i, j, board[i][j]);
+                Boggle.board[i][j] = new BoardPoint(i, j, board[i][j]);
             }
         }
 
-        // For each BoardPoint on the board.
-        for (int i = 0; i < newBoard.length; i++)
+        for (int i = 0; i < board.length; i++)
         {
-            for (int j = 0; j < newBoard[0].length; j++)
+            for (int j = 0; j < board[0].length; j++)
             {
-                stack.add(newBoard[i][j]);
-
-                String currentWord = "";
-
-                while(!stack.isEmpty())
-                {
-                    BoardPoint currentLocation = stack.pop();
-                    currentLocation.setVisited(true);
-                    for (BoardPoint point : getSurroundingPoints(currentLocation, newBoard))
-                    {
-                        if (!point.isVisited())
-                        {
-                            stack.add(point);
-                            currentWord += point.getCharacter();
-
-                            // Inefficient way to check if a word is in the dictionary, will convert to a hash map later.
-                            if (checkIsPrefixInDictionary(currentWord, dictionary))
-                            {
-                                for (String w : dictionary)
-                                {
-                                    if (currentWord.equals(w))
-                                    {
-                                        goodWords.add(currentWord);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                point.setVisited(false);
-                                // Remove the character we just added to the currentWord bc it doesn't match. (Should I even do this ???)
-                                currentWord = currentWord.substring(0, currentWord.length() - 1);
-                            }
-                        }
-                    }
-                }
+                dfs(Boggle.board[i][j], "");
             }
         }
+
+
+
+
         // #TODO: figure this out
         // for each traversal, go as far as you can, setting visited to true as u go, if already visited can't go there. Need to check if when at a given word,
         // can this word possibly be longer? If not , go back, otherwise, keep searching. When going back, set the point we are leaving back to false for visited.
@@ -77,8 +49,35 @@ public class Boggle
         return sol;
     }
 
-    // Checks to see if a given string is a prefix of any word in a dictionary.
-    private static boolean checkIsPrefixInDictionary(String potentialPrefix, String[] dictionary)
+    private static void dfs(BoardPoint point, String currentWord)
+    {
+        if (point.isVisited())
+        {
+            return;
+        }
+        if (!checkIsPrefixInDictionary(currentWord))
+        {
+            return;
+        }
+        if (checkIsWordInDictionary(currentWord))
+        {
+            if (!goodWords.contains(currentWord))
+            {
+                goodWords.add(currentWord);
+            }
+        }
+
+        point.setVisited(true);
+        for (BoardPoint surroundingPoint : getSurroundingPoints(point))
+        {
+            dfs(surroundingPoint, currentWord + point.getCharacter());
+        }
+        point.setVisited(false);
+    }
+
+
+    // Checks to see if a given string is a prefix of any word in the dictionary.
+    private static boolean checkIsPrefixInDictionary(String potentialPrefix)
     {
         for (String word : dictionary)
         {
@@ -90,14 +89,28 @@ public class Boggle
         return false;
     }
 
+    // Checks to see if a given string is a word the dictionary.
+    private static boolean checkIsWordInDictionary(String potentialWord)
+    {
+        for (String word : dictionary)
+        {
+            if (word.equals(potentialWord))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Gets all valid surrounding board points on the board from a given starting point.
-    private static ArrayList<BoardPoint> getSurroundingPoints(BoardPoint startingPoint, BoardPoint[][] board)
+    private static ArrayList<BoardPoint> getSurroundingPoints(BoardPoint startingPoint)
     {
         int xCord = startingPoint.getxPos();
         int yCord = startingPoint.getyPos();
 
         ArrayList<BoardPoint> surrounding = new ArrayList<>();
 
+        // This is really dumb, might try to make it with a loop later but it works for now.
         if (xCord - 1 >= 0)
         {
             surrounding.add(board[xCord - 1][yCord]);
