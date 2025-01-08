@@ -1,17 +1,21 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class Boggle
 {
-    private static String[] dictionary;
+    private static TST TSTDictionary;
     private static BoardPoint[][] board;
     private static ArrayList<String> goodWords;
 
     public static String[] findWords(char[][] board, String[] dictionary)
     {
-        Boggle.dictionary = dictionary;
+        TSTDictionary = new TST(dictionary[0]);
+
+        // Add all the dictionary words, skip the first index though because that's the root already.
+        for (int i = 1; i < dictionary.length; i++)
+        {
+            TSTDictionary.insert(dictionary[i]);
+        }
+
         goodWords = new ArrayList<>();
 
         // New version of the board that replaces the character board with a board made up of BoardPoint objects.
@@ -34,7 +38,6 @@ public class Boggle
                 dfs(Boggle.board[i][j], "");
             }
         }
-
 
 
 
@@ -62,10 +65,7 @@ public class Boggle
         }
         if (checkIsWordInDictionary(currentWord))
         {
-            if (!goodWords.contains(currentWord))
-            {
-                goodWords.add(currentWord);
-            }
+            goodWords.add(currentWord);
         }
 
         point.setVisited(true);
@@ -76,31 +76,16 @@ public class Boggle
         point.setVisited(false);
     }
 
-
     // Checks to see if a given string is a prefix of any word in the dictionary.
     private static boolean checkIsPrefixInDictionary(String potentialPrefix)
     {
-        for (String word : dictionary)
-        {
-            if (word.startsWith(potentialPrefix))
-            {
-                return true;
-            }
-        }
-        return false;
+        return TSTDictionary.containsPrefix(potentialPrefix);
     }
 
     // Checks to see if a given string is a word the dictionary.
     private static boolean checkIsWordInDictionary(String potentialWord)
     {
-        for (String word : dictionary)
-        {
-            if (word.equals(potentialWord))
-            {
-                return true;
-            }
-        }
-        return false;
+        return TSTDictionary.contains(potentialWord);
     }
 
     // Gets all valid surrounding board points on the board from a given starting point.
