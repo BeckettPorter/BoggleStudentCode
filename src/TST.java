@@ -87,17 +87,19 @@ public class TST
         }
     }
 
-    public TSTNode containsPrefix(String word, TSTNode startingNode)
+    public boolean containsPrefix(String word)
     {
-        return containsPrefix(startingNode, word, 0);
+        return containsPrefix(root, word, 0);
     }
 
-    public TSTNode containsPrefix(TSTNode node, String word, int index)
+    // Checks if a given word exists as a prefix in the dictionary. This could mean it is a full word
+    // or just the start of one.
+    public boolean containsPrefix(TSTNode node, String word, int index)
     {
         // Base case to see if we have reached the end of the word, then return true because the prefix exists.
         if (index == word.length())
         {
-            return node;
+            return true;
         }
 
         // Get the "desiredNode" which is the target next node
@@ -106,7 +108,7 @@ public class TST
         // If this next node doesn't exist, the word isn't in the TST, thus not in the dictionary, and is misspelled.
         if (desiredNode == null)
         {
-            return null;
+            return false;
         }
 
         // If we are going down the middle path, then increment index by 1, otherwise do not.

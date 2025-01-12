@@ -1,7 +1,7 @@
 import java.util.*;
 
 // Boggle by Beckett Porter, Zachary Blickensderfer
-// Completed January 10th, 2025
+// Completed January 12th, 2025
 
 public class Boggle
 {
@@ -42,7 +42,7 @@ public class Boggle
         {
             for (int j = 0; j < mainBoard[0].length; j++)
             {
-                dfs(Boggle.mainBoard[i][j], "", TSTDictionary.getRoot());
+                dfs(Boggle.mainBoard[i][j], "");
             }
         }
 
@@ -55,17 +55,18 @@ public class Boggle
 
     // Recursive depth first search which goes from a starting point and searches around
     // the rest of the board for words, adding them to goodWords if they are valid.
-    private static void dfs(BoardPoint point, String currentWord, TSTNode currentNode)
+    private static void dfs(BoardPoint point, String currentWord)
     {
         // If the point is already visited, return.
         if (point.isVisited())
         {
             return;
         }
+
+        currentWord += point.getCharacter();
+
         // Check if the word exists as at least a prefix in the dictionary, if not return.
-        // #todo: RETURN NEXT NODE IN prefix search, null if doesn't exist (acts as bool)
-        TSTNode prefixStartNode = TSTDictionary.containsPrefix(currentWord, currentNode);
-        if (prefixStartNode == null)
+        if (!TSTDictionary.containsPrefix(currentWord))
         {
             return;
         }
@@ -75,16 +76,16 @@ public class Boggle
             goodWords.add(currentWord);
         }
 
-
         // Set a point as visited, then send calls to search surrounding points, and once those are complete,
         // set this point as not visited again.
         point.setVisited(true);
         for (BoardPoint surroundingPoint : getSurroundingPoints(point))
         {
-            dfs(surroundingPoint, currentWord + point.getCharacter(), prefixStartNode);
+            dfs(surroundingPoint, currentWord);
         }
         point.setVisited(false);
     }
+
 
     // Gets all valid surrounding board points on the board from a given starting point.
     private static ArrayList<BoardPoint> getSurroundingPoints(BoardPoint startingPoint)
@@ -94,7 +95,6 @@ public class Boggle
 
         ArrayList<BoardPoint> surrounding = new ArrayList<>();
 
-        // This is really dumb, might try to make it with a loop later, but it works for now.
         if (xCord - 1 >= 0)
         {
             surrounding.add(mainBoard[xCord - 1][yCord]);
