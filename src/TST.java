@@ -87,17 +87,17 @@ public class TST
         }
     }
 
-    public boolean containsPrefix(String word)
+    public TSTNode containsPrefix(String word, TSTNode startingNode)
     {
-        return containsPrefix(root, word, 0);
+        return containsPrefix(startingNode, word, 0);
     }
 
-    public boolean containsPrefix(TSTNode node, String word, int index)
+    public TSTNode containsPrefix(TSTNode node, String word, int index)
     {
         // Base case to see if we have reached the end of the word, then return true because the prefix exists.
         if (index == word.length())
         {
-            return true;
+            return node;
         }
 
         // Get the "desiredNode" which is the target next node
@@ -106,20 +106,19 @@ public class TST
         // If this next node doesn't exist, the word isn't in the TST, thus not in the dictionary, and is misspelled.
         if (desiredNode == null)
         {
-            return false;
+            return null;
         }
 
         // If we are going down the middle path, then increment index by 1, otherwise do not.
         if (getNextIndex(node, word, index) == 1)
         {
-            return contains(desiredNode, word, index + 1);
+            return containsPrefix(desiredNode, word, index + 1);
         }
         else
         {
-            return contains(desiredNode, word, index);
+            return containsPrefix(desiredNode, word, index);
         }
     }
-
 
     // Method that tells me what route (or index) to traverse down. If the character is a match, go down the middle,
     // otherwise go either left or right depending on whether it is higher or lower.
@@ -139,5 +138,10 @@ public class TST
             nextIndex = 1;
         }
         return nextIndex;
+    }
+
+    public TSTNode getRoot()
+    {
+        return root;
     }
 }
